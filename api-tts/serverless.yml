@@ -1,0 +1,62 @@
+service: api-tts
+frameworkVersion: '3'
+provider:
+  name: aws
+  runtime: python3.9
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "polly:SynthesizeSpeech"
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+      Resource: arn:aws:s3:::bucket-sprint6/*
+    - Effect: Allow
+      Action:
+        - "dynamodb:PutItem"
+        - "dynamodb:GetItem"
+      Resource: arn:aws:dynamodb:us-east-1:528260343431:table/audio-data-sprint6
+functions:
+  health:
+    handler: handler.health
+    events:
+      - httpApi:
+          path: /
+          method: get
+  v1Description:
+    handler: handler.v1_description
+    events:
+      - httpApi:
+          path: /v1
+          method: get
+  v2Description:
+    handler: handler.v2_description
+    events:
+      - httpApi:
+          path: /v2
+          method: get
+  ttsget:
+    handler: handler.tts_get
+    events:
+      - httpApi:
+          path: /menu
+          method: get
+  v1tts:
+    handler: handler.v1_tts
+    events:
+      - httpApi:
+          path: /v1/tts
+          method: post
+  v2tts:
+    handler: handler.v2_tts
+    events:
+      - httpApi:
+          path: /v2/tts
+          method: post
+  v3tts:
+    handler: handler.v3_tts
+    events:
+      - httpApi:
+          path: /v3/tts
+          method: post
